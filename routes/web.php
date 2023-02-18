@@ -1,18 +1,33 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use Inertia\Inertia;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return Inertia::render('Home');
+})->name('home');
+
+Route::get('/about', function () {
+    return Inertia::render('About');
+})->name('about');
+
+Route::get('/edit', function () {
+    return Inertia::modal('Edit')
+        ->with([
+            'contact' => [
+                'first_name' => 'Lucas',
+                'last_name' => 'Yang',
+            ],
+        ])
+        ->baseRoute('home');
+})->name('edit');
+
+Route::put('/update', function (Request $request) {
+    $request->validate([
+        'first_name' => ['min:2', 'max:10'],
+        'last_name' => ['min:2', 'max:10'],
+    ]);
+
+    return to_route('home');
+})->name('update');
